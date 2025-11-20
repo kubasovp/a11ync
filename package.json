@@ -1,0 +1,33 @@
+{
+  "name": "a11ync",
+  "version": "0.0.1",
+  "description": "Accessible native UI components library (WIP)",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "scripts": {
+    "prepublishOnly": "echo 'Publishing a11ync placeholder...'"
+  },
+  "keywords": [
+    "a11y",
+    "accessibility",
+    "components",
+    "ui",
+    "vanilla-js",
+    "web-components",
+    "wcag"
+  ],
+  "author": "Peter Kubasov",
+  "license": "MIT",
+  "homepage": "https://github.com/kubasovp/a11ync",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kubasovp/a11ync.git"
+  }
+}
