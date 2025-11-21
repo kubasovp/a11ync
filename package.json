@@ -3,16 +3,15 @@
   "version": "0.0.1",
   "description": "Accessible native UI components library (WIP)",
   "type": "module",
-  "main": "index.js",
-  "exports": {
-    ".": "./index.js"
-  },
-  "files": [
-    "index.js",
-    "README.md"
-  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "prepublishOnly": "echo 'Publishing a11ync placeholder...'"
+    "build:lib": "tsup --config tsup.config.ts",
+    "dev:lib": "tsup --watch",
+    "build:site": "npm -C site run build",
+    "dev:site": "npm -C site run dev",
+    "build": "npm run build:lib && npm run build:site"
   },
   "keywords": [
     "a11y",
@@ -29,5 +28,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kubasovp/a11ync.git"
+  },
+  "dependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   }
 }
