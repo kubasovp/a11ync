@@ -1,0 +1,16 @@
+---
+const { frontmatter } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{frontmatter.title ?? "A11YNC"}</title>
+  </head>
+
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

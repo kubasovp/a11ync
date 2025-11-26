@@ -1,0 +1,18 @@
+---
+import { Button } from "a11ync";
+---
+
+<button class="a11y-btn">Click me</button>
+
+<script>
+  import { Button } from 'a11ync';
+	new Button(document.querySelector('.a11y-btn'));
+</script>
+
+<style>
+.a11y-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+</style>

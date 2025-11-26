@@ -1,0 +1,38 @@
+---
+import { sidebar } from "./sidebar.config";
+---
+
+<aside class="sidebar">
+  {sidebar.map(section => (
+    <div class="section">
+      <h4>{section.title}</h4>
+      <ul>
+        {section.items.map(item => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</aside>
+
+<style>
+  .sidebar {
+    width: 256px;
+    padding: 1rem;
+    border-right: 1px solid var(--border);
+  }
+
+  h4 {
+    font-size: 0.9rem;
+    margin: 1.4rem 0 0.6rem;
+    opacity: .7;
+  }
+
+  a {
+    display: block;
+    padding: .25rem 0;
+    text-decoration: none;
+  }
+</style>

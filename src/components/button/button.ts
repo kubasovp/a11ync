@@ -1,84 +1,88 @@
+console.log('button imported');
+
 export interface ButtonOptions {
-  disabled?: boolean;
+	disabled?: boolean;
 }
 
 type ButtonEvents = "click";
 
 export class Button {
-  #el: HTMLButtonElement | HTMLElement;
-  #listeners = new Map<ButtonEvents, Set<(...args: any[]) => void>>();
+	#el: HTMLButtonElement | HTMLElement;
+	#listeners = new Map<ButtonEvents, Set<(...args: any[]) => void>>();
 
-  constructor(el: HTMLElement, options: ButtonOptions = {}) {
-    this.#el = el;
+	constructor(el: HTMLElement, options: ButtonOptions = {}) {
+		this.#el = el;
 
-    this.#setupRole();
-    this.disabled = options.disabled ?? this.#el.hasAttribute("disabled");
+		this.#setupRole();
+		this.disabled = options.disabled ?? this.#el.hasAttribute("disabled");
 
-    this.#bindHandlers();
-  }
+		this.#bindHandlers();
+	}
 
-  // --- Private ------------------------------
+	// Private
 
-  #setupRole() {
-    if (this.#el instanceof HTMLButtonElement) return;
-    if (!this.#el.hasAttribute("role")) this.#el.setAttribute("role", "button");
-    if (!this.#el.hasAttribute("tabindex")) this.#el.setAttribute("tabindex", "0");
-  }
+	#setupRole() {
+		if (this.#el instanceof HTMLButtonElement) return;
+		if (!this.#el.hasAttribute("role")) this.#el.setAttribute("role", "button");
+		if (!this.#el.hasAttribute("tabindex")) this.#el.setAttribute("tabindex", "0");
+	}
 
-  #bindHandlers() {
-    this.#el.addEventListener("click", (e) => {
-      if (this.disabled) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      this.#emit("click", e);
-    });
+	#bindHandlers() {
+		this.#el.addEventListener("click", (e) => {
+			if (this.disabled) {
+				e.preventDefault();
+				e.stopPropagation();
+				return;
+			}
+			this.#emit("click", e);
+		});
 
-    this.#el.addEventListener("keydown", (e) => {
-      if (this.disabled) return;
+		this.#el.addEventListener("keydown", (e: Event) => {
+			if (this.disabled) return;
 
-      if (e.key === " " || e.key === "Enter") {
-        e.preventDefault();
-        this.#el.click();
-      }
-    });
-  }
+			const keyboardEvent = e as KeyboardEvent;
 
-  #emit(event: ButtonEvents, payload: any) {
-    const handlers = this.#listeners.get(event);
-    if (!handlers) return;
-    handlers.forEach((fn) => fn(payload));
-  }
+			if (keyboardEvent.key === " " || keyboardEvent.key === "Enter") {
+				keyboardEvent.preventDefault();
+				this.#el.click();
+			}
+		});
+	}
 
-  // --- Public API ---------------------------
+	#emit(event: ButtonEvents, payload: any) {
+		const handlers = this.#listeners.get(event);
+		if (!handlers) return;
+		handlers.forEach((fn) => fn(payload));
+	}
 
-  on(event: ButtonEvents, callback: (ev: any) => void) {
-    if (!this.#listeners.has(event)) this.#listeners.set(event, new Set());
-    this.#listeners.get(event)!.add(callback);
-    return this;
-  }
+	// Public API
 
-  off(event: ButtonEvents, callback: (ev: any) => void) {
-    this.#listeners.get(event)?.delete(callback);
-    return this;
-  }
+	on(event: ButtonEvents, callback: (ev: any) => void) {
+		if (!this.#listeners.has(event)) this.#listeners.set(event, new Set());
+		this.#listeners.get(event)!.add(callback);
+		return this;
+	}
 
-  set disabled(value: boolean) {
-    if (value) {
-      this.#el.setAttribute("disabled", "");
-      this.#el.setAttribute("aria-disabled", "true");
-      this.#el.setAttribute("tabindex", "-1");
-    } else {
-      this.#el.removeAttribute("disabled");
-      this.#el.setAttribute("aria-disabled", "false");
-      if (!(this.#el instanceof HTMLButtonElement)) {
-        this.#el.setAttribute("tabindex", "0");
-      }
-    }
-  }
+	off(event: ButtonEvents, callback: (ev: any) => void) {
+		this.#listeners.get(event)?.delete(callback);
+		return this;
+	}
 
-  get disabled(): boolean {
-    return this.#el.hasAttribute("disabled");
-  }
+	set disabled(value: boolean) {
+		if (value) {
+			this.#el.setAttribute("disabled", "");
+			this.#el.setAttribute("aria-disabled", "true");
+			this.#el.setAttribute("tabindex", "-1");
+		} else {
+			this.#el.removeAttribute("disabled");
+			this.#el.setAttribute("aria-disabled", "false");
+			if (!(this.#el instanceof HTMLButtonElement)) {
+				this.#el.setAttribute("tabindex", "0");
+			}
+		}
+	}
+
+	get disabled(): boolean {
+		return this.#el.hasAttribute("disabled");
+	}
 }

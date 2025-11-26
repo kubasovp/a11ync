@@ -1,36 +1,48 @@
 {
-  "name": "a11ync",
-  "version": "0.0.1",
-  "description": "Accessible native UI components library (WIP)",
-  "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build:lib": "tsup --config tsup.config.ts",
-    "dev:lib": "tsup --watch",
-    "build:site": "npm -C site run build",
-    "dev:site": "npm -C site run dev",
-    "build": "npm run build:lib && npm run build:site"
-  },
-  "keywords": [
-    "a11y",
-    "accessibility",
-    "components",
-    "ui",
-    "vanilla-js",
-    "web-components",
-    "wcag"
-  ],
-  "author": "Peter Kubasov",
-  "license": "MIT",
-  "homepage": "https://github.com/kubasovp/a11ync",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kubasovp/a11ync.git"
-  },
-  "dependencies": {
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
-  }
+	"name": "a11ync",
+	"version": "0.0.1",
+	"description": "Accessibility native UI components library (WIP)",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"dev:lib": "tsup --watch",
+		"dev:site": "npm -C site run dev",
+		"build:lib": "tsup --config tsup.config.ts",
+		"build:site": "npm -C site run build",
+		"build": "npm run build:lib && npm run build:site"
+	},
+	"keywords": [
+		"a11y",
+		"accessibility",
+		"components",
+		"ui",
+		"vanilla-js",
+		"web-components",
+		"wcag"
+	],
+	"author": "Peter Kubasov",
+	"license": "MIT",
+	"homepage": "https://github.com/kubasovp/a11ync",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kubasovp/a11ync.git"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.1",
+		"tsup": "^8.5.1",
+		"typescript": "^5.9.3"
+	}
 }

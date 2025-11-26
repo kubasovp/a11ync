@@ -1,0 +1,61 @@
+---
+title: "Button"
+description: "Базовая кнопка с нативным поведением и a11y-паттернами."
+layout: ../../layouts/DocsLayout.astro
+---
+
+import ButtonDemo from '../../components/ButtonDemo.astro';
+import ButtonDemoDiv from '../../components/ButtonDemoDiv.astro';
+
+# Button
+
+Минимальный, полностью нативный компонент кнопки. Работает на `HTMLButtonElement` или произвольной ноде с ролью `button`.
+
+## Когда использовать
+- В любых распределённых интерфейсах, где нужна предсказуемая кнопка без UI-стилей.
+- В случаях, где важна доступность, управление клавиатурой и корректная работа `disabled`.
+
+## Семантика
+- Если элемент — `button`, используются нативные поведения.
+- Если элемент НЕ `button`, добавляются:
+  `role="button"`, `tabindex="0"` и имитация активации по Enter/Space.
+
+## A11y summary
+- Keyboard Activation: Enter / Space
+- Правильные состояния: `disabled`, `aria-disabled`
+- Никаких side effects, можно применять в любой форме
+
+---
+
+## Примеры
+### button
+```html
+<button class="a11y-btn">Click me</button>
+```
+
+```js
+import { Button } from "a11ync";
+new Button(document.querySelector(".a11y-btn"));
+```
+
+#### Результат
+<ButtonDemo />
+```html
+<button class="a11y-btn" aria-disabled="false">Click me</button>
+```
+
+### div (или span)
+```html
+<div class="a11y-btn">Click me</div>
+```
+
+```js
+import { Button } from "a11ync";
+new Button(document.querySelector(".a11y-btn"));
+```
+
+#### Результат
+<ButtonDemoDiv />
+```html
+<div class="a11y-btn" role="button" tabindex="0" aria-disabled="false">Click me div</div>
+```

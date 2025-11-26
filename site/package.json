@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.12",
+    "a11ync": "file:..",
     "astro": "^5.16.0",
     "pagefind": "^1.4.0"
   }
