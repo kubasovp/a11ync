@@ -1,12 +1,57 @@
 ---
-import { Button } from "a11ync";
+import { Button, ToggleButton, MenuButton } from "a11ync";
 ---
+<hr>
+<button id="basic-btn">Клик</button>
 
-<button class="a11y-btn">Click me</button>
+<div id="custom-btn">Клик</div>
 
+<button id="toggle-btn" data-a11ync-type="toggle">
+  Вкл / выкл
+</button>
+
+<div id="toggle-custom" data-a11ync-type="toggle">
+  Активно / Не активно
+</div>
+
+<button id="menu-btn" data-a11ync-type="menu">
+  Открыть меню
+</button>
+
+<div id="menu-custom" data-a11ync-type="menu">
+  Меню
+</div>
+
+<hr>
 <script>
-  import { Button } from 'a11ync';
-	new Button(document.querySelector('.a11y-btn'));
+  import { Button, ToggleButton, MenuButton } from 'a11ync';
+
+	const el = document.querySelector('#basic-btn');
+	const btn = new Button(el);
+
+	const el1 = document.querySelector('#custom-btn');
+	const btn1 = new Button(el1);
+
+	const el2 = document.querySelector('#toggle-btn');
+	const toggle = new ToggleButton(el2, {
+		pressed: false,
+		onToggle: (v) => console.log('pressed:', v),
+	});
+
+	const el3 = document.querySelector('#toggle-custom');
+	const toggle3 = new ToggleButton(el3, {
+		pressed: true,
+	});
+
+	const el4 = document.querySelector('#menu-btn');
+	const menuBtn = new MenuButton(el4, {
+		expanded: false,
+	});
+
+	const el5 = document.querySelector('#menu-custom');
+	const menuBtn5 = new MenuButton(el5, {
+		expanded: true,
+	});
 </script>
 
 <style>
