@@ -9,53 +9,146 @@ import ButtonDemoDiv from '../../components/ButtonDemoDiv.astro';
 
 # Button
 
-Минимальный, полностью нативный компонент кнопки. Работает на `HTMLButtonElement` или произвольной ноде с ролью `button`.
+Минимальный, полностью компонент кнопки. Работает на `HTMLButtonElement` или произвольной ноде с ролью `button`.
 
 ## Когда использовать
-- В любых распределённых интерфейсах, где нужна предсказуемая кнопка без UI-стилей.
-- В случаях, где важна доступность, управление клавиатурой и корректная работа `disabled`.
+- Если требуется предсказуемая кнопка без привязки к UI-фреймворкам и стилям.
+- В проектах с жёсткими требованиями к доступности.
+- В местах, где важно корректное управление клавиатурой, `disabled` и обработкой событий.
+- Как базу для расширенных сценариев: `ToggleButton`, `MenuButton`.
 
 ## Семантика
-- Если элемент — `button`, используются нативные поведения.
-- Если элемент НЕ `button`, добавляются:
-  `role="button"`, `tabindex="0"` и имитация активации по Enter/Space.
+### Если элемент — `<button>`
+Используется нативное поведение:
+- корректные атрибуты `disabled`
+- нативная активация Enter/Space
+- встроенная доступность
 
-## A11y summary
-- Keyboard Activation: Enter / Space
-- Правильные состояния: `disabled`, `aria-disabled`
-- Никаких side effects, можно применять в любой форме
+### Если элемент **не `<button>`**
+Компонент применяет минимальный fallback:
+- `role="button"`
+- `tabindex="0"`
+- эмуляция активации по Enter / Space
+
+**Важно:** при использовании кастомного тега выводится `console.warn` с рекомендацией использовать `<button>`.
+
+## A11y Summary
+- Полная поддержка нативной клавиатурной навигации.
+- Enter и Space вызывают `click` (Space предотвращает скролл).
+- Корректная работа состояний `disabled` и `aria-disabled`.
+- Компонент не меняет DOM-структуру и не добавляет избыточных ARIA.
+
+## Поведение клавиатуры
+- **Enter** → запускает `click`
+- **Space** → предотвращает скролл и запускает `click`
+- **Tab / Shift+Tab** → используется нативно (или через `tabindex="0"` в fallback)
+
+## Приоритет конфигурации
+Компонент следует предсказуемому порядку инициализации:
+
+1. Атрибуты DOM (`disabled`, `aria-*`)
+2. Data-API (`data-a11ync-type="basic" | "toggle" | "menu"`)
+3. JS-опции конструктора
+
+DOM всегда сильнее Data-API, Data-API сильнее JS-опций.
+
+## SSR и Hydration
+Button корректно восстанавливает поведение после SSR-hydration:
+
+- Существующие атрибуты и состояние не перезаписываются.
+- Добавляется только функциональность и обработчики.
+- Инициализация idempotent — повторный вызов `init()` безопасен.
+
+## Ограничения
+- Компонент не управляет состояниями `pressed` или `expanded` (это задачи `ToggleButton` и `MenuButton`).
+- Компонент не добавляет визуальные стили.
+- Не изменяет структуру DOM.
+- Для нестандартных тегов доступность ограничена минимальным fallback.
+- Не эмулирует сложные ARIA-паттерны.
 
 ---
 
-## Примеры
-### button
+## Типы кнопок
+### Button
+Базовая кнопка с нативной семантикой и единым модельным поведением.
+
+#### Ключевые особенности:
+- Используется, когда нужна простая активация действий без состояний.
+- Автоматическая нормализация поведения для `div[role="button"]`.
+- Keyboard Activation по Enter/Space.
+- Поддержка disabled и aria-disabled.
+- Без побочных эффектов — не вмешивается в стили, формы и фокусировку.
+
+### ToggleButton
+Кнопка-переключатель со встроенной логикой состояния (aria-pressed).
+Подходит для «ON/OFF» сценариев: mute, избранное, фильтры, переключатели вида и т.п.
+
+#### Ключевые особенности:
+- Отслеживает состояние pressed.
+- Синхронно обновляет aria-pressed.
+- Не меняет DOM-структуру, только атрибуты.
+- При disabled блокируется логика и события.
+- Убирает разрыв между визуальным состоянием и а11y-атрибутами.
+- Обеспечивает корректное взаимодействие с ассистивными технологиями.
+- Делает поведение предсказуемым независимо от тега (`button` или `div[role="button"]`).
+
+### MenuButton
+Кнопка, управляющая раскрытием внешнего меню.
+Не реализует само меню — только логику expanded и необходимые ARIA-связи.
+
+#### Ключевые особенности:
+- Управляет атрибутом aria-expanded.
+- Не навязывает структуру меню (YAGNI).
+- События работают консистентно для клавиатуры и мыши.
+- Может использоваться с button или любым элементом с ролью.
+
+Кнопки открытия dropdown, popover, меню действий.
+Контролы, где видимость контента меняется внешним кодом или UI-компонентом.
+
+---
+
+## Инициализация
 ```html
-<button class="a11y-btn">Click me</button>
+<button id="basic-btn">button</button>
+
+<div id="custom-btn">div</div>
+
+<button id="toggle-btn" data-a11ync-type="toggle">Вкл / выкл (button)</button>
+
+<div id="toggle-custom" data-a11ync-type="toggle">Активно / Не активно (div)</div>
+
+<button id="menu-btn" data-a11ync-type="menu">Открыть меню (button)</button>
+
+<div id="menu-custom" data-a11ync-type="menu">Меню (div)</div>
 ```
 
 ```js
-import { Button } from "a11ync";
-new Button(document.querySelector(".a11y-btn"));
+import { Button, ToggleButton, MenuButton } from 'a11ync';
+
+// Basic buttons
+new Button(document.querySelector('#basic-btn'));
+
+new Button(document.querySelector('#custom-btn'));
+
+// Toggle buttons
+const toggle = new ToggleButton(document.querySelector('#toggle-btn'), {
+	pressed: false,
+	onToggle: (v) => console.log('pressed:', v),
+});
+
+const toggle3 = new ToggleButton(document.querySelector('#toggle-custom'), {
+	pressed: true,
+});
+
+// Menu buttons
+const menuBtn = new MenuButton(document.querySelector('#menu-btn'), {
+	expanded: false,
+});
+
+const menuBtn5 = new MenuButton(document.querySelector('#menu-custom'), {
+	expanded: true,
+});
 ```
 
 #### Результат
 <ButtonDemo />
-```html
-<button class="a11y-btn" aria-disabled="false">Click me</button>
-```
-
-### div (или span)
-```html
-<div class="a11y-btn">Click me</div>
-```
-
-```js
-import { Button } from "a11ync";
-new Button(document.querySelector(".a11y-btn"));
-```
-
-#### Результат
-<ButtonDemoDiv />
-```html
-<div class="a11y-btn" role="button" tabindex="0" aria-disabled="false">Click me div</div>
-```
