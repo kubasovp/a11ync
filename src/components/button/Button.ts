@@ -40,9 +40,8 @@ export class Button {
   }
 
   init(): this {
-    if (HANDLERS.has(this.el)) return this; // уже инициализировано
+    if (HANDLERS.has(this.el)) return this;
 
-    // Нативность по умолчанию
     if (!isNativeButton(this.el)) {
       warnCustomTag(this.el);
       this.el.setAttribute('role', 'button');
@@ -66,15 +65,11 @@ export class Button {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (this.isDisabled()) return;
+
       // emulate Enter / Space for non-native buttons
       if (!isNativeButton(this.el) && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault();
-        // fire click
         (this.el as HTMLElement).click?.();
-      }
-      // allow consumer-provided onClick via keyboard
-      if (e.key === 'Enter' || e.key === ' ') {
-        this.options.onClick?.(e);
       }
     };
 
