@@ -9,6 +9,7 @@ import { dispatchCustomEvent, isNativeButton, warnCustomTag } from './utils';
 type HandlerRefs = {
   click?: EventListener;
   keydown?: EventListener;
+	extensions?: { type: string; handler: EventListener }[];
 };
 
 const INSTANCES = new WeakMap<Element, Button>();
@@ -38,6 +39,18 @@ export class Button {
   static from(el: Element): Button | undefined {
     return INSTANCES.get(el);
   }
+
+	protected registerExtensionHandler(type: string, handler: EventListener): void {
+		let refs = HANDLERS.get(this.el);
+		if (!refs) {
+			refs = {};
+			HANDLERS.set(this.el, refs);
+		}
+
+		(refs.extensions ??= []).push({ type, handler });
+		this.el.addEventListener(type, handler);
+	}
+
 
   init(): this {
     if (HANDLERS.has(this.el)) return this;
@@ -85,6 +98,11 @@ export class Button {
     if (handlers) {
       if (handlers.click) this.el.removeEventListener('click', handlers.click);
       if (handlers.keydown) this.el.removeEventListener('keydown', handlers.keydown);
+			if (handlers.extensions) {
+				for (const { type, handler } of handlers.extensions) {
+					this.el.removeEventListener(type, handler);
+				}
+			}
       HANDLERS.delete(this.el);
     }
     // восстановить оригинальные атрибуты

@@ -22,7 +22,7 @@ export class MenuButton extends Button {
       if (this.isDisabled()) return;
       this.toggle();
     };
-    this.el.addEventListener('a11ync:click', onClick as EventListener);
+    this.registerExtensionHandler('a11ync:click', onClick);
   }
 
   toggle(value?: boolean) {

@@ -21,7 +21,7 @@ export class ToggleButton extends Button {
     };
 
     // слушаем internal event, чтобы не дублировать чужие click-handlers
-    this.el.addEventListener('a11ync:click', onToggleClick as EventListener);
+		this.registerExtensionHandler('a11ync:click', onToggleClick);
   }
 
   toggle(value?: boolean) {

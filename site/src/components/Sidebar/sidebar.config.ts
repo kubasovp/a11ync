@@ -8,12 +8,6 @@ export interface SidebarSection {
 
 export const sidebar: SidebarSection[] = [
   {
-    title: "Основы",
-    items: [
-      { label: "Введение", href: "/" },
-    ],
-  },
-  {
     title: "Компоненты",
     items: [
       { label: "Button", href: "/components/button" },

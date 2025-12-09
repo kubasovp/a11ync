@@ -1,0 +1,54 @@
+:root {
+	--color-primary: #4169e1;
+	--color-active: #e14169;
+	--color-title: #09163b;
+	--color-text: #050b1d;
+	--color-bg: #f0f3fd;
+	--font-sans: system-ui, -apple-system, sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: var(--font-sans);
+	line-height: 1.6;
+	color: var(--color-text);
+	font-size: 18px;
+}
+
+h1,h2,h3,h4,h5 {
+	margin: 2rem 0 0.5rem;
+	color: var(--color-title);
+}
+
+h1 {
+	margin-top: 0;
+	color: var(--color-title);
+}
+
+h2 + h3 {
+	margin-top: 0;
+}
+
+ul, ol {
+	margin-left: 2rem;
+}
+
+a {
+	display: block;
+	padding: .25rem 0;
+	text-decoration: none;
+	color: #2a5ef8;
+}
+
+a:visited {
+color: #6941e1;
+}
+
+a:hover {
+	color: var(--color-active);
+}
