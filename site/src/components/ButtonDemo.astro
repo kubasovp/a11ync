@@ -1,40 +1,16 @@
 ---
-import { Button, ToggleButton, MenuButton } from "a11ync";
+import { useButton } from "a11ync";
 ---
 
 <button id="basic-btn">button</button>
 
-<div id="custom-btn">div</div>
-
-<button id="toggle-btn" data-a11ync-type="toggle">Вкл / выкл (button)</button>
-
-<div id="toggle-custom" data-a11ync-type="toggle">Активно / Не активно (div)</div>
-
-<button id="menu-btn" data-a11ync-type="menu">Открыть меню (button)</button>
-
-<div id="menu-custom" data-a11ync-type="menu">Меню (div)</div>
-
 <script>
-  import { Button, ToggleButton, MenuButton } from 'a11ync';
+  import { useButton } from 'a11ync';
 
-	new Button(document.querySelector('#basic-btn'));
-
-	new Button(document.querySelector('#custom-btn'));
-
-	const toggle = new ToggleButton(document.querySelector('#toggle-btn'), {
-		pressed: false,
-		onToggle: (v) => console.log('pressed:', v),
-	});
-
-	const toggle3 = new ToggleButton(document.querySelector('#toggle-custom'), {
-		pressed: true,
-	});
-
-	const menuBtn = new MenuButton(document.querySelector('#menu-btn'), {
-		expanded: false,
-	});
-
-	const menuBtn5 = new MenuButton(document.querySelector('#menu-custom'), {
-		expanded: true,
-	});
+	const el = document.querySelector('#basic-btn')
+  const button = new useButton(el, {
+    onPress: () => {
+      console.log('Pressed')
+    }
+  })
 </script>
