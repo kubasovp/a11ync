@@ -13,111 +13,165 @@ const { title, description } = Astro.props;
 </head>
 
 <body>
-	<div class="layout">
-		<main class="content">
-			<article>
-				<slot />
-			</article>
-		</main>
+	<div class="layout" data-sidebar="closed">
+		<div class="pane" id="pane">
+			<main class="content">
+				<article>
+					<slot />
+				</article>
+			</main>
 
-		<Sidebar class="sidebar"/>
+			<Sidebar class="sidebar"/>
+		</div>
 
-		<button class="burger-button">
+		<button
+			class="burger-button"
+			type="button"
+			aria-controls="sidebar"
+			aria-expanded="false"
+		>
 			<span></span>
 			<span></span>
 			<span></span>
 		</button>
+
+		<button class="overlay" type="button" aria-label="Close sidebar"></button>
 	</div>
 </body>
 </html>
 
+<script is:inline>
+	const layout = document.querySelector('.layout');
+	const btn = document.querySelector('.burger-button');
+	const overlay = document.querySelector('.overlay');
+
+	const setOpen = (open) => {
+		layout.dataset.sidebar = open ? 'open' : 'closed';
+		btn.classList.toggle('active', open);
+		btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+	};
+
+	setOpen(false);
+
+	btn.addEventListener('click', (e) => {
+		e.preventDefault();
+		setOpen(layout.dataset.sidebar !== 'open');
+	});
+
+	overlay.addEventListener('click', (e) => {
+		e.preventDefault();
+		setOpen(false);
+	});
+
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') setOpen(false);
+	});
+</script>
+
+
 <style>
 .layout {
-  position: relative;
-	display: grid;
-  transition: transform 0.3s ease-in-out;
+	position: relative;
+	width: 100vw;
+	overflow-x: hidden;
 }
 
-/* Бургер-кнопка (скрыта на десктопе) */
-.burger-button {
-  display: none;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
-  /* Стили для кнопки */
+.pane {
+	width: 100%;
 }
 
-/* Десктопная версия */
 @media (min-width: 769px) {
-  .layout {
-    grid-template-columns: 1.618fr 1fr;
-    min-height: 100vh;
-  }
-
-  .burger-button {
-    display: none; /* Не показываем на десктопе */
-  }
+	.pane {
+		display: grid;
+		grid-template-columns: 1.618fr 1fr;
+		gap: 0;
+		transform: none !important;
+		transition: none;
+	}
+	.content { min-width: 0; }
+	.sidebar { min-width: 0; }
 }
 
-/* Мобильная версия */
 @media (max-width: 768px) {
-  .burger-button {
-    display: block; /* Показываем бургер */
-  }
+	.pane {
+		--sbw: calc(100vw * 0.381966);
+		display: flex;
+		width: calc(100vw + var(--sbw));
+		transform: translateX(0);
+		transition: transform .25s ease;
+		will-change: transform;
+	}
 
-  .layout {
-    grid-template-columns: 100vw 38vw;
-  }
+	.content {
+		flex: 0 0 100vw;
+		width: 100vw;
+		min-width: 0;
+	}
 
-  .layout {
-    transform: translateX(0);
-  }
+	.sidebar {
+		flex: 0 0 var(--sbw);
+		width: var(--sbw);
+	}
 
-  .layout.menu-open {
-    transform: translateX(-38vw);
-  }
+	.layout[data-sidebar="open"] .pane {
+		transform: translateX(calc(-1 * var(--sbw)));
+	}
 }
 
-/* Анимация бургер-кнопки */
 .burger-button {
-  width: 30px;
-  height: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 100;
+	width: 30px;
+	height: 24px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.burger-button{ display: block; }
 }
 
 .burger-button span {
-  display: block;
-  width: 100%;
-  height: 3px;
-  background: #000;
-  margin: 5px 0;
-  transition: 0.3s;
+	display: block;
+	width: 100%;
+	height: 3px;
+	background: #000;
+	margin: 5px 0;
+	transition: .3s;
 }
 
 .burger-button.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+	transform: rotate(45deg) translate(5px, 5px);
 }
-
 .burger-button.active span:nth-child(2) {
-  opacity: 0;
+	opacity: 0;
+}
+.burger-button.active span:nth-child(3) {
+	transform: rotate(-45deg) translate(7px, -6px);
 }
 
-.burger-button.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px);
+.overlay {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  background: rgba(0,0,0,.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 90;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .overlay { display: block; }
+  .layout[data-sidebar="open"] .overlay {
+		right: calc(100vw * 0.381966);
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 </style>
-
-<script>
-const burgerButton = document.querySelector('.burger-button');
-const contentWrapper = document.querySelector('.layout');
-
-burgerButton.addEventListener('click', () => {
-  contentWrapper.classList.toggle('menu-open');
-
-  // Меняем иконку бургера на крестик
-  burgerButton.classList.toggle('active');
-});
-</script>
