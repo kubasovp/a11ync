@@ -6,31 +6,118 @@ const { title, description } = Astro.props;
 
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title ?? "Docs — A11YNC"}</title>
-  {description && <meta name="description" content={description} />}
+	<title>{title ?? "Docs — A11YNC"}</title>
+	{description && <meta name="description" content={description} />}
 </head>
 
 <body>
-  <div class="layout">
-    <main class="content">
-      <article>
-        <slot />
-      </article>
-    </main>
+	<div class="layout">
+		<main class="content">
+			<article>
+				<slot />
+			</article>
+		</main>
 
 		<Sidebar class="sidebar"/>
-  </div>
+
+		<button class="burger-button">
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+	</div>
 </body>
 </html>
 
 <style>
 .layout {
-  display: grid;
-	grid-template-columns: 1.618fr 1fr;
+  position: relative;
+	display: grid;
+  transition: transform 0.3s ease-in-out;
 }
-.content {
-  padding: 2rem;
+
+/* Бургер-кнопка (скрыта на десктопе) */
+.burger-button {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  /* Стили для кнопки */
+}
+
+/* Десктопная версия */
+@media (min-width: 769px) {
+  .layout {
+    grid-template-columns: 1.618fr 1fr;
+    min-height: 100vh;
+  }
+
+  .burger-button {
+    display: none; /* Не показываем на десктопе */
+  }
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+  .burger-button {
+    display: block; /* Показываем бургер */
+  }
+
+  .layout {
+    grid-template-columns: 100vw 38vw;
+  }
+
+  .layout {
+    transform: translateX(0);
+  }
+
+  .layout.menu-open {
+    transform: translateX(-38vw);
+  }
+}
+
+/* Анимация бургер-кнопки */
+.burger-button {
+  width: 30px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.burger-button span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #000;
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+.burger-button.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-button.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-button.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
 }
 </style>
+
+<script>
+const burgerButton = document.querySelector('.burger-button');
+const contentWrapper = document.querySelector('.layout');
+
+burgerButton.addEventListener('click', () => {
+  contentWrapper.classList.toggle('menu-open');
+
+  // Меняем иконку бургера на крестик
+  burgerButton.classList.toggle('active');
+});
+</script>
